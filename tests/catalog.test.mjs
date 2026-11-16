@@ -4,8 +4,8 @@ import { QUESTION_CATALOG } from '../src/data/questions.js';
 import { evaluateSubmission } from '../src/js/scoring.js';
 import { matchAnswer } from '../src/js/normalizer.js';
 
-test('Catalog integrity: QUESTION_CATALOG has exactly 42 questions', () => {
-  assert.equal(QUESTION_CATALOG.length, 42);
+test('Catalog integrity: QUESTION_CATALOG has at least 60 questions', () => {
+  assert.equal(QUESTION_CATALOG.length, 60);
 });
 
 test('Catalog integrity: zero duplicate answers across tiers within any question', () => {
