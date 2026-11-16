@@ -1,0 +1,238 @@
+/**
+ * Krillion - Animation Keyframes & Visual FX
+ * Provides keyframes for ambient ocean bubbles, submarine plunge descent,
+ * input rejection shake, tier pop-in pulses, odometer roll, and victory fanfare.
+ */
+
+/* ========================================================================== */
+/* 1. Ambient Floating Deep-Sea Bubbles                                       */
+/* ========================================================================== */
+@keyframes float-bubble {
+  0% {
+    transform: translate3d(0, 105vh, 0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.65;
+  }
+  50% {
+    transform: translate3d(24px, 50vh, 0) scale(0.9);
+  }
+  85% {
+    opacity: 0.65;
+  }
+  100% {
+    transform: translate3d(-18px, -8vh, 0) scale(1.15);
+    opacity: 0;
+  }
+}
+
+@keyframes float-bubble-alt {
+  0% {
+    transform: translate3d(0, 105vh, 0) scale(0.7);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.55;
+  }
+  60% {
+    transform: translate3d(-30px, 45vh, 0) scale(1);
+  }
+  90% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate3d(20px, -8vh, 0) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.bubble {
+  position: fixed;
+  bottom: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  border: 1.5px solid rgba(205, 238, 255, 0.72);
+  pointer-events: none;
+  z-index: var(--z-bubbles);
+  animation: float-bubble 14s infinite ease-in;
+}
+
+.bubble:nth-child(2n) {
+  animation: float-bubble-alt 18s infinite ease-in;
+  animation-delay: 3s;
+}
+
+.bubble:nth-child(3n) {
+  animation: float-bubble 22s infinite ease-in;
+  animation-delay: 7s;
+}
+
+.bubble:nth-child(4n) {
+  animation: float-bubble-alt 16s infinite ease-in;
+  animation-delay: 11s;
+}
+
+/* ========================================================================== */
+/* 2. Submarine Depth Plunge Descent & Idle Bob                               */
+/* ========================================================================== */
+@keyframes vessel-bob {
+  0%, 100% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  50% {
+    transform: translate(-50%, calc(-50% - 6px)) rotate(-1.5deg);
+  }
+}
+
+@keyframes plunge-dive {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(-50%, calc(-50% + 14px)) rotate(6deg) scale(1.06);
+    filter: drop-shadow(0 0 24px var(--accent-biolum));
+  }
+  60% {
+    transform: translate(-50%, calc(-50% + 22px)) rotate(4deg) scale(1.03);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  }
+}
+
+.vessel-plunging {
+  animation: plunge-dive 1.1s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+}
+
+.vessel-idle {
+  animation: vessel-bob 4s ease-in-out infinite;
+}
+
+/* ========================================================================== */
+/* 3. Input Rejection Tremor Shake                                            */
+/* ========================================================================== */
+@keyframes shake-reject {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  15%, 45%, 75% {
+    transform: translateX(-10px);
+  }
+  30%, 60%, 90% {
+    transform: translateX(10px);
+  }
+}
+
+.shake,
+.input-shake,
+.rejected {
+  animation: shake-reject 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  border-color: var(--color-error) !important;
+  box-shadow: 0 0 16px rgba(255, 0, 85, 0.6) !important;
+}
+
+/* ========================================================================== */
+/* 4. Tier Reveal Pulse & Apex Legendary Shimmer                              */
+/* ========================================================================== */
+@keyframes tier-pulse {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.22);
+    opacity: 1;
+  }
+  75% {
+    transform: scale(0.94);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.tier-revealing {
+  animation: tier-pulse 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes apex-shimmer {
+  0% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.6), 0 0 8px rgba(255, 0, 128, 0.4);
+  }
+  50% {
+    background-position: 100% 50%;
+    box-shadow: 0 0 32px rgba(255, 0, 128, 0.9), 0 0 20px rgba(255, 215, 0, 0.9);
+  }
+  100% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.6), 0 0 8px rgba(255, 0, 128, 0.4);
+  }
+}
+
+.tier-one-in-a-krillion {
+  background-size: 200% 200%;
+  animation: apex-shimmer 3s ease infinite;
+}
+
+/* ========================================================================== */
+/* 5. Numeric Odometer Roll & Counter Flip                                    */
+/* ========================================================================== */
+@keyframes odometer-roll {
+  0% {
+    transform: translateY(60%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.odometer-digit-rolling {
+  display: inline-block;
+  animation: odometer-roll 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ========================================================================== */
+/* 6. Victory Fanfare Flare & Hadal Celebration                               */
+/* ========================================================================== */
+@keyframes fanfare-flare {
+  0% {
+    transform: scale(0.85);
+    box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.7);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 60px 30px rgba(255, 0, 128, 0.7);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 100px 50px rgba(0, 255, 255, 0);
+  }
+}
+
+.victory-fanfare {
+  animation: fanfare-flare 1.8s ease-out forwards;
+}
+
+/* ========================================================================== */
+/* 7. Timer Urgent Flashing Red Pulse                                         */
+/* ========================================================================== */
+@keyframes timer-flash {
+  0%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 14px rgba(255, 0, 85, 0.9));
+  }
+  50% {
+    opacity: 0.35;
+    filter: drop-shadow(0 0 3px rgba(255, 0, 85, 0.3));
+  }
+}
+
+.timer-urgent #timer-text,
+.timer-urgent .timer-circle {
+  animation: timer-flash 0.5s ease-in-out infinite;
+}

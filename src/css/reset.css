@@ -1,0 +1,182 @@
+/**
+ * Krillion - Modern Responsive CSS Reset & Custom Property Definitions
+ * Provides accessible typography, fluid scale, standard box model, and design tokens.
+ */
+
+:root {
+  /* Typography Stacks */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, Menlo, Monaco, monospace;
+
+  /* Font Scale */
+  --font-xs: 0.75rem;     /* 12px */
+  --font-sm: 0.875rem;    /* 14px */
+  --font-base: 1rem;       /* 16px */
+  --font-lg: 1.125rem;    /* 18px */
+  --font-xl: 1.25rem;     /* 20px */
+  --font-2xl: 1.5rem;     /* 24px */
+  --font-3xl: 2rem;       /* 32px */
+  --font-4xl: 2.5rem;     /* 40px */
+  --font-5xl: 3.25rem;    /* 52px */
+
+  /* Spacing Scale */
+  --space-2xs: 0.125rem;  /* 2px */
+  --space-xs: 0.25rem;    /* 4px */
+  --space-sm: 0.5rem;     /* 8px */
+  --space-md: 1rem;       /* 16px */
+  --space-lg: 1.5rem;     /* 24px */
+  --space-xl: 2rem;       /* 32px */
+  --space-2xl: 3rem;      /* 48px */
+  --space-3xl: 4rem;      /* 64px */
+
+  /* Border Radius */
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-theme: 1200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layering / Z-Index Hierarchy */
+  --z-background: 0;
+  --z-bubbles: 2;
+  --z-depth-track: 5;
+  --z-hud: 20;
+  --z-card: 30;
+  --z-overlay: 100;
+  --z-modal: 110;
+  --z-toast: 200;
+
+  /* Universal Status Colors */
+  --color-success: #00f5a0;
+  --color-warning: #ffb703;
+  --color-error: #ff0055;
+  --color-info: #00d4ff;
+
+  /* Timer Status Tints */
+  --timer-cyan: #00f0ff;
+  --timer-amber: #ffb703;
+  --timer-red: #ff0055;
+
+  /* Rarity Tier Colors */
+  --tier-plankton-color: #8ecae6;
+  --tier-too-clever-color: #2ec4b6;
+  --tier-schooler-color: #00b4d8;
+  --tier-rare-color: #9d4edd;
+  --tier-deep-cut-color: #ff9e00;
+  --tier-krillion-color: #ff007f;
+}
+
+/* 1. Box Model & Geometry Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 2. Document & Body Base */
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  tab-size: 4;
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  height: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--font-base);
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* 3. Media & Embedded Content */
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* 4. Form Controls & Buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+button:disabled,
+input:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 5. Typography Elements */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+p, span, label {
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* 6. Accessibility Focus Rings */
+:focus-visible {
+  outline: 2px solid var(--accent-glow, #00d4ff);
+  outline-offset: 3px;
+}
+
+/* 7. Utility Classes */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hidden {
+  display: none !important;
+}

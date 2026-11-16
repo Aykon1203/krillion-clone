@@ -1,0 +1,431 @@
+/**
+ * Krillion - Atmospheric Pixel-Art Oceanic Depth Palette & Scene Styling
+ * Recreates the retro CRT deep-sea aesthetic across all 5 marine depth zones.
+ */
+
+:root {
+  --font-pixel: 'Courier New', 'VT323', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+
+  /* Default Oceanic Palette (Sunlight Zone baseline) */
+  --bg-gradient-top: #1b4f78;
+  --bg-gradient-mid: #143f63;
+  --bg-gradient-bottom: #0d2b47;
+  --bg-caustics: rgba(71, 232, 255, 0.14);
+
+  --accent-glow: #47e8ff;
+  --accent-glow-subtle: rgba(71, 232, 255, 0.3);
+  --accent-biolum: #47e8ff;
+  --accent-biolum-glow: rgba(71, 232, 255, 0.45);
+  --accent-pink: #f25c84;
+  --accent-pink-glow: rgba(242, 92, 132, 0.45);
+  --accent-gold: #f5c242;
+
+  --text-primary: #eef6ff;
+  --text-secondary: #89a5c9;
+  --text-muted: #5c7496;
+
+  --surface-panel: #131c2e;
+  --surface-panel-border: #253552;
+  --surface-panel-shadow: 0 12px 32px rgba(0, 6, 16, 0.75);
+
+  --bubble-tint: rgba(200, 240, 255, 0.65);
+  --vessel-glow: 0 0 14px rgba(242, 92, 132, 0.8);
+  --depth-track-bg: rgba(13, 24, 42, 0.65);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Zone 1: Sunlight Zone (Epipelagic: 0m - 200m)                              */
+/* -------------------------------------------------------------------------- */
+.zone-sunlight,
+body.zone-sunlight {
+  --bg-gradient-top: #1a4e78;
+  --bg-gradient-mid: #133c60;
+  --bg-gradient-bottom: #0c2944;
+  --bg-caustics: rgba(120, 220, 255, 0.16);
+  --accent-glow: #47e8ff;
+  --accent-biolum: #47e8ff;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Zone 2: Twilight Zone (Mesopelagic: 200m - 1,000m)                         */
+/* -------------------------------------------------------------------------- */
+.zone-twilight,
+body.zone-twilight {
+  --bg-gradient-top: #0f2e4a;
+  --bg-gradient-mid: #091d32;
+  --bg-gradient-bottom: #05101e;
+  --bg-caustics: rgba(71, 232, 255, 0.06);
+  --accent-glow: #47e8ff;
+  --accent-biolum: #38bdf8;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Zone 3: Midnight Zone (Bathypelagic: 1,000m - 4,000m)                      */
+/* -------------------------------------------------------------------------- */
+.zone-midnight,
+body.zone-midnight {
+  --bg-gradient-top: #071629;
+  --bg-gradient-mid: #040d1a;
+  --bg-gradient-bottom: #02060e;
+  --bg-caustics: rgba(56, 189, 248, 0.03);
+  --accent-glow: #47e8ff;
+  --accent-biolum: #f25c84;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Zone 4: The Abyss (Abyssopelagic: 4,000m - 6,000m)                         */
+/* -------------------------------------------------------------------------- */
+.zone-abyss,
+body.zone-abyss {
+  --bg-gradient-top: #040b16;
+  --bg-gradient-mid: #02060d;
+  --bg-gradient-bottom: #010206;
+  --bg-caustics: rgba(242, 92, 132, 0.03);
+  --accent-glow: #47e8ff;
+  --accent-biolum: #c084fc;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Zone 5: Hadal Trench (Hadalpelagic: 6,000m - 7,000m+)                      */
+/* -------------------------------------------------------------------------- */
+.zone-hadal,
+body.zone-hadal {
+  --bg-gradient-top: #02040a;
+  --bg-gradient-mid: #010205;
+  --bg-gradient-bottom: #000002;
+  --bg-caustics: rgba(255, 42, 117, 0.05);
+  --accent-glow: #47e8ff;
+  --accent-biolum: #f5c242;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Global Deep-Sea Background & CRT Scanlines                                 */
+/* -------------------------------------------------------------------------- */
+body {
+  font-family: var(--font-pixel);
+  background-color: #061426;
+  background-image: linear-gradient(
+    180deg,
+    var(--bg-gradient-top) 0%,
+    var(--bg-gradient-mid) 52%,
+    var(--bg-gradient-bottom) 100%
+  );
+  background-attachment: fixed;
+  color: var(--text-primary);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  transition:
+    background-color 0.9s ease,
+    background-image 0.9s ease;
+}
+
+/* CRT Horizontal Scanline Overlay */
+.crt-scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 150;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.16) 0px,
+      rgba(0, 0, 0, 0.16) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+
+/* Ambient Deep-Sea Vignette */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, transparent 55%, rgba(0, 4, 12, 0.6) 100%);
+  z-index: 2;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Pixel-Art Ocean Scene (Surface Sky, Boat, Sunbeams, Kelp, Krill)           */
+/* -------------------------------------------------------------------------- */
+.ocean-scene {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Surface World (Sky + Boat + Waterline at 0m, translates up on dive) */
+.surface-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease;
+}
+
+.pixel-sky {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 29vh;
+  background:
+    radial-gradient(circle at 84% 4%, rgba(255, 245, 195, 0.75) 0%, rgba(255, 242, 180, 0.25) 14%, transparent 32%),
+    linear-gradient(180deg, #abd8f5 0%, #cde9fa 65%, #e4f4fd 100%);
+}
+
+/* Pixel Clouds */
+.pixel-cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow:
+    -18px 8px 0 -2px rgba(255, 255, 255, 0.85),
+    18px 8px 0 -2px rgba(255, 255, 255, 0.85),
+    0 -8px 0 -2px rgba(255, 255, 255, 0.9);
+}
+
+.cloud-main {
+  top: 5.5vh;
+  left: 44%;
+  width: 110px;
+  height: 24px;
+}
+
+.cloud-small {
+  top: 9vh;
+  left: 37%;
+  width: 64px;
+  height: 16px;
+  opacity: 0.75;
+}
+
+/* Pixel Boat floating on the 0m Waterline */
+.pixel-boat {
+  position: absolute;
+  top: calc(29vh - 50px);
+  left: 25%;
+  z-index: 4;
+  animation: boat-bob 3.5s steps(4) infinite;
+}
+
+@keyframes boat-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+.waterline-wave {
+  position: absolute;
+  top: calc(29vh - 4px);
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: #0d2c49;
+  box-shadow: 0 4px 0 rgba(13, 44, 73, 0.6);
+}
+
+/* Diagonal Underwater Sunbeams */
+.sunbeams {
+  position: absolute;
+  top: 29vh;
+  left: 10%;
+  right: 10%;
+  height: 71vh;
+  background:
+    linear-gradient(102deg, transparent 15%, rgba(120, 210, 255, 0.07) 20%, transparent 26%),
+    linear-gradient(96deg, transparent 38%, rgba(120, 210, 255, 0.08) 44%, transparent 52%),
+    linear-gradient(84deg, transparent 58%, rgba(120, 210, 255, 0.07) 64%, transparent 71%),
+    linear-gradient(76deg, transparent 74%, rgba(120, 210, 255, 0.06) 79%, transparent 85%);
+}
+
+/* Underwater Kelp & Rock Spires */
+.underwater-scenery {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Bottom-Left Pixel Coral/Seaweed Silhouette (Visible at 0m in Screenshot 1) */
+.surface-coral-left {
+  position: absolute;
+  left: 2.5%;
+  bottom: 72px;
+  width: 96px;
+  height: 112px;
+  background: #081c30;
+  opacity: 0.85;
+  clip-path: polygon(
+    22% 100%, 22% 72%, 6% 62%, 12% 52%, 28% 64%,
+    32% 36%, 18% 24%, 26% 16%, 40% 30%, 46% 8%,
+    56% 8%, 54% 38%, 72% 22%, 80% 30%, 60% 50%,
+    64% 68%, 84% 54%, 90% 64%, 66% 82%, 66% 100%
+  );
+}
+
+.kelp-left {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 210px;
+  height: 75vh;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  background-image:
+    radial-gradient(circle at 38% 18%, #071426 0%, #071426 18px, transparent 19px),
+    radial-gradient(circle at 52% 28%, #071426 0%, #071426 15px, transparent 16px),
+    radial-gradient(circle at 32% 38%, #071426 0%, #071426 19px, transparent 20px),
+    radial-gradient(circle at 48% 48%, #071426 0%, #071426 16px, transparent 17px),
+    linear-gradient(90deg, #061222 0%, rgba(6, 18, 34, 0.7) 40%, transparent 80%);
+}
+
+.kelp-right {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 220px;
+  height: 85vh;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  background-image:
+    radial-gradient(circle at 68% 18%, #071426 0%, #071426 20px, transparent 21px),
+    radial-gradient(circle at 52% 28%, #071426 0%, #071426 16px, transparent 17px),
+    radial-gradient(circle at 74% 38%, #071426 0%, #071426 18px, transparent 19px),
+    radial-gradient(circle at 58% 48%, #071426 0%, #071426 17px, transparent 18px),
+    linear-gradient(270deg, #061222 0%, rgba(6, 18, 34, 0.7) 42%, transparent 82%);
+}
+
+body.zone-twilight .kelp-left,
+body.zone-twilight .kelp-right,
+body.zone-midnight .kelp-left,
+body.zone-midnight .kelp-right,
+body.zone-abyss .kelp-left,
+body.zone-abyss .kelp-right,
+body.zone-hadal .kelp-left,
+body.zone-hadal .kelp-right {
+  opacity: 0.75;
+}
+
+/* Dark Abyssal Rock Spires (Prominent in deeper zones, like Screenshots 3 & 4) */
+.abyss-spires {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+  background: linear-gradient(180deg, transparent 0%, rgba(2, 6, 14, 0.55) 100%);
+}
+
+body.zone-twilight .abyss-spires,
+body.zone-midnight .abyss-spires,
+body.zone-abyss .abyss-spires,
+body.zone-hadal .abyss-spires {
+  opacity: 1;
+}
+
+.abyss-spires::before,
+.abyss-spires::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  background: #040b16;
+}
+
+.abyss-spires::before {
+  left: 10%;
+  width: 190px;
+  height: 92vh;
+  clip-path: polygon(12% 100%, 44% 6%, 54% 8%, 88% 100%);
+}
+
+.abyss-spires::after {
+  right: 11%;
+  width: 220px;
+  height: 90vh;
+  clip-path: polygon(8% 100%, 36% 4%, 48% 7%, 70% 42%, 82% 38%, 96% 100%);
+}
+
+/* Marine Snow 2x2 Pixel Specks scattered across water */
+.marine-snow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image:
+    radial-gradient(2px 2px at 12% 42%, rgba(210, 240, 255, 0.8) 50%, transparent 100%),
+    radial-gradient(2px 2px at 23% 68%, rgba(210, 240, 255, 0.7) 50%, transparent 100%),
+    radial-gradient(2px 2px at 31% 81%, rgba(210, 240, 255, 0.6) 50%, transparent 100%),
+    radial-gradient(2px 2px at 44% 26%, rgba(210, 240, 255, 0.75) 50%, transparent 100%),
+    radial-gradient(2px 2px at 53% 62%, rgba(210, 240, 255, 0.65) 50%, transparent 100%),
+    radial-gradient(2px 2px at 66% 52%, rgba(210, 240, 255, 0.8) 50%, transparent 100%),
+    radial-gradient(2px 2px at 73% 84%, rgba(210, 240, 255, 0.7) 50%, transparent 100%),
+    radial-gradient(2px 2px at 82% 38%, rgba(210, 240, 255, 0.65) 50%, transparent 100%),
+    radial-gradient(2px 2px at 88% 66%, rgba(210, 240, 255, 0.75) 50%, transparent 100%),
+    radial-gradient(2px 2px at 18% 89%, rgba(210, 240, 255, 0.7) 50%, transparent 100%);
+}
+
+/* Small Pixel Fish Silhouettes */
+.pixel-fish {
+  position: absolute;
+  width: 24px;
+  height: 9px;
+  background: #081526;
+  clip-path: polygon(0% 15%, 24% 50%, 0% 85%, 28% 62%, 72% 100%, 100% 50%, 72% 0%, 28% 38%);
+  opacity: 0.78;
+}
+
+.fish-1 { top: 57%; left: 25%; }
+.fish-2 { top: 60%; left: 34.5%; }
+.fish-3 { top: 53%; right: 6.5%; }
+.fish-4 { top: 86.5%; right: 3.5%; }
+
+/* Glowing Red Pixel Krill Mascot on the Left (Matches all 4 screenshots!) */
+.krill-mascot {
+  position: fixed;
+  left: 4.2%;
+  top: 72%;
+  z-index: 15;
+  filter: drop-shadow(0 0 12px rgba(255, 42, 85, 0.85));
+  animation: krill-hover 3.2s ease-in-out infinite;
+  transition: top 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Small White Pixel Ring Bubbles right near the Krill Mascot */
+.krill-bubble {
+  position: absolute;
+  border: 1.5px solid rgba(215, 242, 255, 0.78);
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: none;
+}
+
+.krill-bubble.kb-1 {
+  width: 9px;
+  height: 9px;
+  top: -16px;
+  right: -12px;
+}
+
+.krill-bubble.kb-2 {
+  width: 8px;
+  height: 8px;
+  top: -68px;
+  right: -8px;
+  opacity: 0.7;
+}
+
+@keyframes krill-hover {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-8px) rotate(4deg); }
+}
+
+.depth-theme-container {
+  position: relative;
+  z-index: 10;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

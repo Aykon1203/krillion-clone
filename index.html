@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Krillion - Een omgekeerde-trivia diepzee-duikgame. Hoe zeldzamer je juiste antwoord, hoe dieper je duikt!">
+  <meta name="theme-color" content="#0b1528">
+  <title>krillion.io — De Diepzee Trivia Duik</title>
+
+  <!-- Favicon (Pixel Krill) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦐</text></svg>">
+
+  <!-- Core Stylesheets in strict dependency order -->
+  <link rel="stylesheet" href="src/css/reset.css">
+  <link rel="stylesheet" href="src/css/ocean-theme.css">
+  <link rel="stylesheet" href="src/css/components.css">
+  <link rel="stylesheet" href="src/css/animations.css">
+
+  <!-- Main ES Module Application Controller -->
+  <script type="module" src="src/js/app.js"></script>
+</head>
+<body class="zone-sunlight">
+
+  <!-- CRT Scanlines Overlay -->
+  <div class="crt-scanlines" aria-hidden="true"></div>
+
+  <!-- Pixel-Art Ocean Scene Background -->
+  <div id="ocean-scene" class="ocean-scene" aria-hidden="true">
+    <!-- Sky & Surface Waterline (Visible at 0m, scrolls up on dive) -->
+    <div id="surface-world" class="surface-world">
+      <div class="pixel-sky">
+        <div class="pixel-cloud cloud-main"></div>
+        <div class="pixel-cloud cloud-small"></div>
+      </div>
+      <!-- Pixel Fishing Boat with Red Flag -->
+      <div class="pixel-boat">
+        <svg viewBox="0 0 64 40" width="96" height="60" shape-rendering="crispEdges">
+          <!-- Mast & Flag -->
+          <rect x="28" y="4" width="2" height="22" fill="#182232" />
+          <rect x="20" y="5" width="8" height="6" fill="#ff4f79" />
+          <rect x="18" y="6" width="2" height="4" fill="#ff4f79" />
+          <!-- Cabin -->
+          <rect x="24" y="18" width="14" height="8" fill="#182232" />
+          <rect x="26" y="20" width="4" height="3" fill="#a8d8f0" />
+          <rect x="32" y="20" width="4" height="3" fill="#a8d8f0" />
+          <!-- Hull -->
+          <rect x="8" y="26" width="48" height="6" fill="#182232" />
+          <rect x="12" y="32" width="40" height="4" fill="#0f1722" />
+        </svg>
+      </div>
+      <div class="waterline-wave"></div>
+      <!-- Underwater Sunbeams -->
+      <div class="sunbeams"></div>
+    </div>
+
+    <!-- Underwater Cliffs, Kelp & Silhouettes -->
+    <div class="underwater-scenery">
+      <div class="surface-coral-left"></div>
+      <div class="kelp-left"></div>
+      <div class="kelp-right"></div>
+      <div class="abyss-spires"></div>
+      <!-- Small Pixel Fish Silhouettes -->
+      <div class="pixel-fish fish-1"></div>
+      <div class="pixel-fish fish-2"></div>
+      <div class="pixel-fish fish-3"></div>
+      <div class="pixel-fish fish-4"></div>
+    </div>
+
+    <!-- Marine Snow Pixel Specks -->
+    <div class="marine-snow" aria-hidden="true"></div>
+
+    <!-- Ambient Pixel Ring Bubbles -->
+    <div class="bubbles-container">
+      <div class="bubble" style="left: 9%; width: 10px; height: 10px; animation-delay: 0s;"></div>
+      <div class="bubble" style="left: 14%; width: 8px; height: 8px; animation-delay: 4s;"></div>
+      <div class="bubble" style="left: 36%; width: 6px; height: 6px; animation-delay: 2s;"></div>
+      <div class="bubble" style="left: 68%; width: 9px; height: 9px; animation-delay: 6s;"></div>
+      <div class="bubble" style="left: 84%; width: 7px; height: 7px; animation-delay: 1s;"></div>
+    </div>
+
+    <!-- Glowing Red Pixel Krill Avatar (Left Side) + Companion Ring Bubbles -->
+    <div id="krill-mascot" class="krill-mascot">
+      <span class="krill-bubble kb-1"></span>
+      <span class="krill-bubble kb-2"></span>
+      <svg viewBox="0 0 32 32" width="54" height="54" shape-rendering="crispEdges">
+        <!-- Antennae -->
+        <rect x="8" y="4" width="6" height="1" fill="#ff5c8a" />
+        <rect x="6" y="5" width="2" height="2" fill="#ff5c8a" />
+        <rect x="10" y="6" width="8" height="1" fill="#ff2a55" />
+        <!-- Head & Eye -->
+        <rect x="8" y="9" width="8" height="6" fill="#ff2a55" />
+        <rect x="10" y="10" width="6" height="4" fill="#ff6b95" />
+        <rect x="9" y="11" width="2" height="2" fill="#101828" />
+        <!-- Curved Segmented Body -->
+        <rect x="14" y="11" width="6" height="6" fill="#ff2a55" />
+        <rect x="15" y="12" width="4" height="4" fill="#ff7aa2" />
+        <rect x="17" y="16" width="6" height="5" fill="#e6194b" />
+        <rect x="18" y="17" width="4" height="3" fill="#ff5c8a" />
+        <rect x="15" y="21" width="6" height="4" fill="#d91442" />
+        <!-- Tail Fan -->
+        <rect x="10" y="23" width="5" height="3" fill="#ff2a55" />
+        <rect x="8" y="25" width="4" height="2" fill="#ff5c8a" />
+        <!-- Swimming Legs -->
+        <rect x="11" y="16" width="2" height="3" fill="#ff5c8a" />
+        <rect x="14" y="18" width="2" height="3" fill="#ff5c8a" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Primary Application Container -->
+  <div id="app" class="depth-theme-container">
+
+    <!-- Persistent Stats Hidden Bar for E2E / Stat Display Compatibility -->
+    <div id="header" class="sr-only" aria-hidden="true">
+      <span id="best-depth">0m</span>
+      <span id="total-dives">0</span>
+    </div>
+
+    <!-- 1. Top Heads-Up Display (HUD) -->
+    <header id="hud" class="hud" role="banner">
+      <!-- Top-Left: DEPTH Panel + Menu Button -->
+      <div class="hud-left-stack">
+        <div class="hud-panel hud-panel-left">
+          <span class="hud-panel-label">DIEPTE</span>
+          <div id="depth-counter" class="depth-counter odometer" aria-label="Huidige duikdiepte" aria-live="polite">0 m</div>
+        </div>
+        <button id="menu-btn" class="hud-square-btn" type="button" aria-label="Nieuwe duik starten" title="Nieuwe duik starten">
+          <svg viewBox="0 0 16 12" width="16" height="12" shape-rendering="crispEdges" aria-hidden="true">
+            <rect x="0" y="0" width="16" height="2" fill="currentColor" />
+            <rect x="0" y="5" width="16" height="2" fill="currentColor" />
+            <rect x="0" y="10" width="16" height="2" fill="currentColor" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Top-Center: 7-Square Progress Bar & Prompt Counter -->
+      <div class="hud-center-stack">
+        <div id="prompt-squares" class="prompt-squares" aria-hidden="true">
+          <span class="prompt-sq active" data-index="0"></span>
+          <span class="prompt-sq" data-index="1"></span>
+          <span class="prompt-sq" data-index="2"></span>
+          <span class="prompt-sq" data-index="3"></span>
+          <span class="prompt-sq" data-index="4"></span>
+          <span class="prompt-sq" data-index="5"></span>
+          <span class="prompt-sq" data-index="6"></span>
+        </div>
+        <div id="question-counter" class="question-badge" aria-label="Vraagvoortgang" aria-live="polite">
+          <span id="question-index">Vraag 1 van 7</span>
+        </div>
+        <div id="zone-label" class="zone-badge sr-only" aria-label="Huidige oceaanzone" aria-live="polite">Zonlichtzone (Epipelagisch)</div>
+      </div>
+
+      <!-- Top-Right: SCORE Panel + Audio Toggle Button -->
+      <div class="hud-right-stack">
+        <div class="hud-panel hud-panel-right">
+          <span class="hud-panel-label">SCORE</span>
+          <div id="score-counter" class="score-counter" aria-label="Huidige score" aria-live="polite">0</div>
+        </div>
+        <button id="mute-btn" class="sound-toggle btn-mute hud-square-btn" type="button" aria-label="Geluid aan/uit" title="Geluid aan/uit (M)">
+          <svg class="icon-unmuted" viewBox="0 0 18 14" width="18" height="14" shape-rendering="crispEdges" aria-hidden="true">
+            <rect x="0" y="4" width="4" height="6" fill="currentColor" />
+            <rect x="4" y="2" width="2" height="10" fill="currentColor" />
+            <rect x="6" y="0" width="2" height="14" fill="currentColor" />
+            <rect x="11" y="4" width="2" height="6" fill="currentColor" />
+            <rect x="15" y="1" width="2" height="12" fill="currentColor" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Dive Screen Layout -->
+    <main id="dive-screen" class="dive-screen" role="main">
+
+      <!-- 2. Right-Side Vertical Depth Ruler (#depth-gauge) -->
+      <aside id="depth-gauge" class="depth-gauge at-surface" aria-label="Verticale diepteschaal">
+        <div id="depth-track" class="depth-track" aria-hidden="true">
+          <div id="depth-progress-fill" class="depth-track-fill" style="height: 0%;"></div>
+
+          <!-- Ruler Ticks Container (Updated dynamically around current depth) -->
+          <div id="ruler-ticks" class="ruler-ticks">
+            <div class="ruler-major" style="top: 29%;"><span>0m</span></div>
+            <div class="ruler-major" style="top: 58.5%;"><span>-100m</span></div>
+            <div class="ruler-major" style="top: 88%;"><span>-200m</span></div>
+          </div>
+
+          <!-- Visible "JIJ ◄" Pink Marker on Right Ruler -->
+          <div id="you-marker" class="you-marker hidden" aria-hidden="true" style="top: 29%;">
+            <span class="you-label">JIJ</span>
+            <span class="you-arrow"></span>
+          </div>
+
+          <!-- Internal Vessel Element for DepthGauge Test Compatibility -->
+          <div id="submarine-icon" class="vessel submarine vessel-idle sr-only" role="img" aria-label="Huidige diepte-indicator" style="top: 0%;"></div>
+        </div>
+      </aside>
+
+      <!-- 3. Central Stage: Pixel-Notched Prompt Card (Active Question State) -->
+      <section id="question-card" class="prompt-card" aria-labelledby="prompt-text">
+        <div id="prompt-container" class="prompt-inner">
+          <!-- Top-Left Prompt Counter inside Card -->
+          <div class="card-header-row">
+            <span id="card-prompt-label" class="card-prompt-label">VRAAG 1 VAN 7</span>
+            <span id="prompt-category" class="prompt-category sr-only">Algemene Kennis</span>
+          </div>
+
+          <!-- Main Prompt Question -->
+          <h2 id="prompt-text" class="prompt-question">
+            Duikvraag laden...
+          </h2>
+
+          <!-- Subtitle Hint -->
+          <div class="prompt-subtitle">
+            ▼ zeldzamere antwoorden zinken dieper ▼
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Between-Question Rarity Reveal Screen (Screenshots 3 & 4) -->
+      <section id="reveal-screen" class="reveal-screen hidden" aria-live="polite">
+        <div class="reveal-center">
+          <div id="reveal-icon" class="reveal-creature-icon"></div>
+          <h2 id="reveal-tier-name" class="reveal-tier-title">ZELDZAAM</h2>
+          <div id="reveal-answer-text" class="reveal-answer-quoted">“Antwoord”</div>
+          <div class="reveal-score-line">
+            <span id="reveal-pts" class="reveal-pts">+60 PTN</span>
+            <span class="reveal-dot">·</span>
+            <span id="reveal-sink" class="reveal-sink">zink 600m</span>
+          </div>
+          <p id="reveal-flavor" class="reveal-flavor">Echt ongebruikelijk. Mooie vangst.</p>
+        </div>
+
+        <div class="reveal-bottom-action">
+          <button id="descend-btn" class="btn-descend" type="button">
+            <span id="descend-btn-text">AFDALEN ▼</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 5. Bottom Input Bar (Timer Circle + Input Box + DUIK Button) -->
+      <div id="bottom-bar" class="bottom-bar">
+        <!-- Left: Circular SVG 25-Second Countdown Timer -->
+        <div id="timer-container" class="timer-container" role="timer" aria-label="Afteltimer voor vraag">
+          <div id="timer-gauge" class="timer-gauge-wrapper">
+            <svg class="timer-svg" viewBox="0 0 84 84" aria-hidden="true">
+              <circle class="timer-track" cx="42" cy="42" r="36" />
+              <circle id="timer-ring" class="timer-circle" cx="42" cy="42" r="36" stroke-dasharray="226" stroke-dashoffset="0" />
+            </svg>
+            <span id="timer-text" class="timer-number">25</span>
+            <span id="timer-display" class="sr-only">25</span>
+          </div>
+        </div>
+
+        <!-- Center & Right: Answer Form -->
+        <form id="answer-form" class="answer-form" autocomplete="off" novalidate>
+          <div class="input-wrapper">
+            <label for="answer-input" class="sr-only">Vul je antwoord in</label>
+            <input
+              id="answer-input"
+              class="answer-input"
+              type="text"
+              placeholder="typ één antwoord..."
+              autofocus
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              required
+              aria-label="Typ je antwoord"
+            />
+            <!-- Bottom Cyan Timer Progress Bar inside Input -->
+            <div class="input-progress-track" aria-hidden="true">
+              <div id="input-timer-bar" class="input-progress-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <button id="submit-btn" class="btn-submit" type="submit" aria-label="Antwoord indienen">
+            DUIK
+          </button>
+
+          <!-- Non-Blocking Feedback Message Display -->
+          <div id="feedback-message" class="feedback-message hidden" role="status" aria-live="polite">
+            <span id="feedback-msg" class="hidden"></span>
+          </div>
+        </form>
+      </div>
+
+    </main>
+
+    <!-- 6. End-of-Session Summary Dashboard Modal -->
+    <div id="summary-modal" class="summary-modal modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="summary-title" aria-describedby="summary-rank-title" style="display: none;">
+      <div class="summary-card summary-dashboard">
+        <!-- Title & Rank -->
+        <div class="summary-kicker">DUIK VOLTOOID</div>
+        <h2 id="summary-title" class="summary-title">Drijvend Plankton</h2>
+        <div id="summary-rank-title" class="summary-rank-title sr-only">Drijvend Plankton</div>
+        <div id="summary-zone" class="summary-zone-pill">Zonlichtzone (Epipelagisch)</div>
+
+        <!-- Metrics Grid -->
+        <div class="summary-metrics">
+          <div class="metric-item">
+            <span class="metric-label">BEREIKTE DIEPTE</span>
+            <span id="summary-depth" class="metric-value metric-cyan">0 m</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">TOTAAL SCORE</span>
+            <span id="summary-points" class="metric-value metric-pink">0 ptn</span>
+          </div>
+        </div>
+
+        <!-- Prompt Breakdown List -->
+        <div id="summary-breakdown" class="summary-breakdown" role="region" aria-label="Vraagoverzicht">
+          <!-- Populated dynamically by app.js on session completion -->
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="summary-actions">
+          <button id="share-btn" class="btn-share" type="button" aria-label="Kopieer duikoverzicht naar klembord">
+            DEEL DUIK
+          </button>
+          <button id="play-again-btn" class="btn-restart btn-replay" type="button" data-action="restart" aria-label="Start een nieuwe duiksessie">
+            OPNIEUW DUIKEN ▼
+          </button>
+          <button id="restart-btn" class="btn-restart sr-only" type="button" aria-hidden="true" tabindex="-1">
+            Opnieuw Duiken
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Toast Notification for Clipboard Copy Feedback -->
+    <div id="toast" class="copy-toast hidden" role="status" aria-live="polite" style="display: none;">
+      <span id="share-feedback">Duik gekopieerd naar klembord!</span>
+    </div>
+
+  </div>
+
+</body>
+</html>
